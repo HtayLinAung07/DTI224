@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Distance to Kasem Bundit University</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    body { display: grid; place-items: center; min-height: 100svh; margin: 0; background: #f7f7f8; }
+    .card { background: white; padding: 2rem; border-radius: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,.08); max-width: 640px; width: 92vw; }
+    h1 { margin: 0 0 .5rem; font-size: 1.4rem; }
+    p { margin: .25rem 0; color: #444; }
+    button { appearance: none; border: 0; background: #111; color: #fff; border-radius: 999px; padding: .9rem 1.25rem; font-weight: 600; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .muted { color: #6b7280; font-size: .95rem; }
+    .result { margin-top: 1rem; font-size: 1.1rem; font-weight: 600; }
+    .small { font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>How far are you from Kasem Bundit University?</h1>
+    <p class="muted small">Click the button to use your device's location (you'll be asked for permission). Works best over HTTPS or localhost.</p>
+    <p>
+      <button id="locBtn">Where am I?</button>
+    </p>
+    <p id="status" class="muted"></p>
+    <p id="output" class="result" aria-live="polite"></p>
+    <p id="campusNote" class="muted small"></p>
+  </main>
+
+  <script>
+    // Coordinates of Kasem Bundit University campuses
+    // Pattanakarn Campus: 1761 Pattanakarn Rd., Suan Luang, Bangkok 10250
+    const PATTANAKARN = { name: 'Pattanakarn Campus', lat: 13.73918, lng: 100.62770 };
+    // Romklao Campus: 60 Rom Klao Rd., Min Buri, Bangkok 10510
+    const ROMKLAO = { name: 'Romklao Campus', lat: 13.80265, lng: 100.73699 };
+
+    const CAMPUSES = [PATTANAKARN, ROMKLAO];
+
+    const statusEl = document.getElementById('status');
+    const outputEl = document.getElementById('output');
+    const noteEl = document.getElementById('campusNote');
+    const btn = document.getElementById('locBtn');
+
+    function toRad(deg) { return deg * Math.PI / 180; }
+
+    // Haversine distance in kilometers
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function nearestCampus(lat, lng) {
+      let best = null;
+      for (const c of CAMPUSES) {
+        const d = haversineKm(lat, lng, c.lat, c.lng);
+        if (!best || d < best.distance) best = { campus: c, distance: d };
+      }
+      return best; // {campus, distance}
+    }
+
+    function formatKm(km) { return km.toFixed(2); }
+
+    function showMessage(txt) {
+      outputEl.textContent = txt;
+    }
+
+    function setStatus(txt) {
+      statusEl.textContent = txt || '';
+    }
+
+    btn.addEventListener('click', () => {
+      if (!('geolocation' in navigator)) {
+        setStatus('Geolocation is not supported by your browser.');
+        return;
+      }
+      btn.disabled = true;
+      setStatus('Getting your location…');
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          const nearest = nearestCampus(latitude, longitude);
+          const km = formatKm(nearest.distance);
+          showMessage(`You're ${km} km away from the Kasem Bundit University.`);
+          noteEl.textContent = `(Nearest campus: ${nearest.campus.name})`;
+          setStatus('');
+          btn.disabled = false;
+        },
+        (err) => {
+          let msg = 'Could not get your location.';
+          if (err && err.message) msg += ` ${err.message}`;
+          setStatus(msg);
+          btn.disabled = false;
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      );
+    });
+  </script>
+</body>
+</html
