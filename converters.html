@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unit Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .converter {
+      background: #fff;
+      padding: 20px;
+      margin: 15px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    input[type="number"] {
+      padding: 6px;
+      margin-right: 10px;
+      width: 140px;
+    }
+    button {
+      padding: 6px 12px;
+      margin: 3px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .convert-btn {
+      background: #4CAF50;
+      color: #fff;
+    }
+    .clear-btn {
+      background: #2196F3;
+      color: #fff;
+    }
+    .back-btn {
+      background: #f44336;
+      color: #fff;
+    }
+    p {
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Unit Converter</h1>
+
+  <!-- LENGTH -->
+  <div class="converter">
+    <h3>Length (Meters ➝ Feet)</h3>
+    <input type="number" id="lengthInput" placeholder="Enter meters">
+    <button class="convert-btn" onclick="convertLength()">Convert</button>
+    <button class="clear-btn" onclick="clearField('lengthInput','lengthResult')">Clear</button>
+    <p>Result: <span id="lengthResult"></span></p>
+    <p class="error" id="lengthError"></p>
+  </div>
+
+  <!-- HEIGHT -->
+  <div class="converter">
+    <h3>Height (Centimeters ➝ Inches)</h3>
+    <input type="number" id="heightInput" placeholder="Enter centimeters">
+    <button class="convert-btn" onclick="convertHeight()">Convert</button>
+    <button class="clear-btn" onclick="clearField('heightInput','heightResult')">Clear</button>
+    <p>Result: <span id="heightResult"></span></p>
+    <p class="error" id="heightError"></p>
+  </div>
+
+  <!-- TEMPERATURE -->
+  <div class="converter">
+    <h3>Temperature (Celsius ➝ Fahrenheit)</h3>
+    <input type="number" id="tempInput" placeholder="Enter Celsius">
+    <button class="convert-btn" onclick="convertTemp()">Convert</button>
+    <button class="clear-btn" onclick="clearField('tempInput','tempResult')">Clear</button>
+    <p>Result: <span id="tempResult"></span></p>
+    <p class="error" id="tempError"></p>
+  </div>
+
+  <!-- AREA -->
+  <div class="converter">
+    <h3>Area (Square Meters ➝ Square Feet)</h3>
+    <input type="number" id="areaInput" placeholder="Enter m²">
+    <button class="convert-btn" onclick="convertArea()">Convert</button>
+    <button class="clear-btn" onclick="clearField('areaInput','areaResult')">Clear</button>
+    <p>Result: <span id="areaResult"></span></p>
+    <p class="error" id="areaError"></p>
+  </div>
+
+  <!-- Back Button -->
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="back-btn" onclick="goBack()">Back</button>
+  </div>
+
+  <script>
+    function validateInput(value, errorId) {
+      if (value === "" || isNaN(value)) {
+        document.getElementById(errorId).innerText = "⚠️ Please enter a valid number.";
+        return false;
+      }
+      if (value < 0) {
+        document.getElementById(errorId).innerText = "⚠️ Value cannot be negative.";
+        return false;
+      }
+      document.getElementById(errorId).innerText = "";
+      return true;
+    }
+
+    function convertLength() {
+      let meters = document.getElementById("lengthInput").value;
+      if (!validateInput(meters, "lengthError")) return;
+      let feet = meters * 3.28084;
+      document.getElementById("lengthResult").innerText = feet.toFixed(2) + " ft";
+    }
+
+    function convertHeight() {
+      let cm = document.getElementById("heightInput").value;
+      if (!validateInput(cm, "heightError")) return;
+      let inches = cm / 2.54;
+      document.getElementById("heightResult").innerText = inches.toFixed(2) + " in";
+    }
+
+    function convertTemp() {
+      let celsius = document.getElementById("tempInput").value;
+      if (!validateInput(celsius, "tempError")) return;
+      let fahrenheit = (celsius * 9/5) + 32;
+      document.getElementById("tempResult").innerText = fahrenheit.toFixed(2) + " °F";
+    }
+
+    function convertArea() {
+      let sqm = document.getElementById("areaInput").value;
+      if (!validateInput(sqm, "areaError")) return;
+      let sqft = sqm * 10.7639;
+      document.getElementById("areaResult").innerText = sqft.toFixed(2) + " ft²";
+    }
+
+    function clearField(inputId, resultId) {
+      document.getElementById(inputId).value = "";
+      document.getElementById(resultId).innerText = "";
+    }
+
+    function goBack() {
+      history.back();
+    }
+  </script>
+</body>
+</html>
