@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grade Assignment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+    input[type="number"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 100px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+    }
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .back-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Grade Assignment</h2>
+    <label for="score">Enter the Score:</label><br>
+    <input type="number" id="score" min="0" max="100"><br>
+    <button class="submit-btn" onclick="checkGrade()">Submit</button>
+    <button class="back-btn" onclick="goBack()">Back</button>
+    <p id="error"></p>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    function checkGrade() {
+      const scoreInput = document.getElementById("score");
+      const score = parseInt(scoreInput.value);
+      const errorEl = document.getElementById("error");
+      const resultEl = document.getElementById("result");
+      let grade = "";
+
+      // Clear old messages
+      errorEl.innerText = "";
+      resultEl.innerText = "";
+
+      // Validation
+      if (isNaN(score)) {
+        errorEl.innerText = "⚠️ Please enter a number.";
+        return;
+      }
+      if (score < 0 || score > 100) {
+        errorEl.innerText = "⚠️ Score must be between 0 and 100.";
+        return;
+      }
+
+      // Grade assignment
+      if (score >= 90) grade = "A";
+      else if (score >= 80) grade = "B";
+      else if (score >= 70) grade = "C";
+      else if (score >= 60) grade = "D";
+      else grade = "F";
+
+      resultEl.innerText = `You got "${grade}": grade.`;
+    }
+
+    function goBack() {
+      history.back();
+    }
+  </script>
+</body>
+</html>
